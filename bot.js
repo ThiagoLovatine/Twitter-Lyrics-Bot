@@ -51,7 +51,7 @@ const postTweetImg = (content) => {
         Bot.post('media/metadata/create', meta_params, function (err, data, response) {
             if (!err) {
                 // now we can reference the media and post a tweet (media will attach to the tweet)
-                var params = { status: content , media_ids: [mediaIdStr] }
+                var params = { status: content , /* media_ids: [mediaIdStr] */}
 
                 Bot.post('statuses/update', params, function (err, data, response) {
                     console.log(data)
