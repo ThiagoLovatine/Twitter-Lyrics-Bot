@@ -1,7 +1,7 @@
 {
   "name": "lyric-bot",
   "version": "1.0.0",
-  "description": "Twitter bot that generates lyrics using Markov Chains!",
+  "description": "Twitter bot that tweets a random number of lyric lines from a .txt file.",
   "main": "bot.js",
   "dependencies": {
     "dotenv": "^6.0.0",
@@ -13,12 +13,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ShawnToubeau/lyric-bot.git"
+    "url": ""
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ShawnToubeau/lyric-bot/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/ShawnToubeau/lyric-bot#readme"
+  "homepage": ""
 }
