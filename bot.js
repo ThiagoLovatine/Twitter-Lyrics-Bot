@@ -32,10 +32,33 @@ const postTweet = (content) => {
     Bot.post('statuses/update', { status: content }, function (error, tweet, response) {
         if (error) {
             console.log("Error making post. ", error.message);
-        } else{
+        } else {
             console.log(content);
         };
     });
+}
+
+const postTweetImg = (content) => {
+    var b64content = fs.readFileSync('./juliajacklin.jpg', { encoding: 'base64' })
+
+    // first we must post the media to Twitter
+    Bot.post('media/upload', { media_data: b64content }, function (err, data, response) {
+        // now we can assign alt text to the media, for use by screen readers and
+        // other text-based presentations and interpreters
+        var mediaIdStr = data.media_id_string
+        var meta_params = { media_id: mediaIdStr, alt_text: { text: content } }
+
+        Bot.post('media/metadata/create', meta_params, function (err, data, response) {
+            if (!err) {
+                // now we can reference the media and post a tweet (media will attach to the tweet)
+                var params = { status: content , media_ids: [mediaIdStr] }
+
+                Bot.post('statuses/update', params, function (err, data, response) {
+                    console.log(data)
+                })
+            }
+        })
+    })
 }
 
 function tweet() {
@@ -44,13 +67,13 @@ function tweet() {
             console.log(error.message);
         } else {
             let result = selectLines(lyrics);
-            postTweet(result);
+            postTweetImg(result);
         }
     });
 }
 
 tweet();
 
-setInterval( () => {
+setInterval(() => {
     tweet();
 }, 60000 * 60 * 1)
