@@ -1,1 +1,1 @@
-git add . && git commit -m "Fix start" && git push origin master && git push heroku master
+git add . && git commit -m "Fix start" && git push origin master && git push dokku master
