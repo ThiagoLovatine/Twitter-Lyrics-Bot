@@ -5,7 +5,10 @@
   "main": "bot.js",
   "dependencies": {
     "dotenv": "^6.0.0",
-    "twit": "^2.2.11"
+    "jimp": "^0.16.1",
+    "node-fetch": "^2.6.1",
+    "twit": "^2.2.11",
+    "unsplash-js": "^7.0.2"
   },
   "devDependencies": {},
   "scripts": {

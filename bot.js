@@ -1,6 +1,10 @@
 const Twit = require('twit');
 const fs = require('fs');
+var Jimp = require('jimp');
 require('dotenv').config();
+const unsplash = require('unsplash-js');
+const fetch = require('node-fetch');
+const request = require('request');
 
 const Bot = new Twit({
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -8,6 +12,24 @@ const Bot = new Twit({
     access_token: process.env.TWITTER_ACCESS_TOKEN,
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
+
+const unsplashApi = unsplash.createApi({
+    accessKey: process.env.UNSPLASH_ACCESS_KEY,
+    fetch: fetch
+});
+
+const getPhoto = async (query) => {
+    return unsplashApi.search
+        .getPhotos({ query, orientation: "landscape" })
+        .then(data => {
+            let imgNum = randomNum(0, data.response.results.length - 1)
+            const fileUrl = data.response.results[imgNum].urls.regular.split('?')[0];
+            return fileUrl;
+        })
+        .catch(() => {
+            console.log("something went wrong!");
+        });
+}
 
 const randomNum = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -25,7 +47,7 @@ const selectLines = (lyrics) => {
             tweet = tweet + "\n" + lines[count + firstLinePosition];
         }
     }
-    return tweet;
+    return [tweet, firstLine];
 }
 
 const postTweet = (content) => {
@@ -38,36 +60,63 @@ const postTweet = (content) => {
     });
 }
 
-const postTweetImg = (content) => {
-    var b64content = fs.readFileSync('./juliajacklin.jpg', { encoding: 'base64' })
+var download = function (uri, filename, callback) {
+    request.head(uri, function (err, res, body) {
+        request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    });
+};
 
-    // first we must post the media to Twitter
+const saveTweet = (content) => {
+    var b64content = fs.readFileSync('./juliajacklin.jpg', { encoding: 'base64' });
     Bot.post('media/upload', { media_data: b64content }, function (err, data, response) {
-        // now we can assign alt text to the media, for use by screen readers and
-        // other text-based presentations and interpreters
         var mediaIdStr = data.media_id_string
         var meta_params = { media_id: mediaIdStr, alt_text: { text: content } }
-
+        if (err) {
+            console.log(err);
+        }
         Bot.post('media/metadata/create', meta_params, function (err, data, response) {
             if (!err) {
-                // now we can reference the media and post a tweet (media will attach to the tweet)
-                var params = { status: content , /* media_ids: [mediaIdStr] */}
-
+                var params = { status: content, media_ids: [mediaIdStr] }
                 Bot.post('statuses/update', params, function (err, data, response) {
-                    console.log(data)
+                    console.log(content)
                 })
             }
         })
     })
 }
 
+const generateImagePixel = async (photoUrl, content) => {
+    download(photoUrl, 'juliajacklin.jpg', () => {
+        Jimp.read('./juliajacklin.jpg')
+            .then(async image => {
+                await image
+                    .cover(720, 720)
+                    .quality(80)
+                    .greyscale()
+                    .writeAsync('juliajacklin.jpg');
+            }).then(() => {
+                saveTweet(content);
+            })
+            .catch(console.error);
+    });
+}
+
+const postTweetImg = async (content, query) => {
+    const photoUrl = await getPhoto(query);
+    generateImagePixel(photoUrl, content);
+}
+
 function tweet() {
-    fs.readFile('lyrics.txt', 'utf8', function (error, lyrics) {
+    const fileNum = randomNum(1, 26);
+    const fileName = 'lyrics/' + fileNum + '.txt';
+    console.log(fileName);
+    fs.readFile(fileName, 'utf8', function (error, lyrics) {
         if (error) {
             console.log(error.message);
         } else {
             let result = selectLines(lyrics);
-            postTweetImg(result);
+            //postTweetImg(result[0], result[1]);
+            postTweet(result[0]);
         }
     });
 }
