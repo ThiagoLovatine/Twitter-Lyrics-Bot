@@ -92,7 +92,7 @@ const generateImagePixel = async (photoUrl, content) => {
         Jimp.read('./currentImage.jpg')
             .then(async image => {
                 await image
-                    .cover(1080, 1080)
+                    .cover(1080, 1080) 
                     //.quality(90)
                     .sepia()
                     .writeAsync('currentImage.jpg');
@@ -108,10 +108,9 @@ const postTweetImg = async (content, query) => {
     generateImagePixel(photoUrl, content);
 }
 
-function tweet() {
-    const fileNum = randomNum(1, 26);
+const tweet = async () => {
+    const fileNum = randomNum(1, 29);
     const fileName = 'src/lyrics/' + fileNum + '.txt';
-    //console.log(fileName);
     fs.readFile(fileName, 'utf8', function (error, lyrics) {
         if (error) {
             console.log(error.message);
