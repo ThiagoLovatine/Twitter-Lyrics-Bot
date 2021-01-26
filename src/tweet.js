@@ -92,8 +92,8 @@ const generateImagePixel = async (photoUrl, content) => {
         Jimp.read('./currentImage.jpg')
             .then(async image => {
                 await image
-                    .cover(720, 720)
-                    .quality(80)
+                    .cover(1080, 1080)
+                    //.quality(90)
                     .sepia()
                     .writeAsync('currentImage.jpg');
             }).then(() => {
