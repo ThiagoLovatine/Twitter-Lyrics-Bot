@@ -3,17 +3,25 @@
   "version": "1.0.2",
   "description": "Twitter bot that tweets a random number of lyric lines from a .txt file.",
   "main": "bot.js",
+  "type": "module",
   "dependencies": {
-    "dotenv": "^6.0.0",
+    "axios": "^0.21.1",
+    "dotenv": "^6.2.0",
+    "es6-promise": "^4.2.8",
+    "fetch": "^1.1.0",
+    "genius-lyrics-api": "^3.0.6",
+    "isomorphic-fetch": "^3.0.0",
     "jimp": "^0.16.1",
     "node-fetch": "^2.6.1",
+    "node-html-parser": "^2.0.2",
     "twit": "^2.2.11",
     "unsplash-js": "^7.0.2"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bot.js"
+    "start": "node bot.js",
+    "boot_bot": "nodemon src/tweet.js"
   },
   "repository": {
     "type": "git",

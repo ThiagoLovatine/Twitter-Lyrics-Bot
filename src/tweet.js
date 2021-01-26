@@ -1,10 +1,11 @@
-const Twit = require('twit');
-const fs = require('fs');
-var Jimp = require('jimp');
-require('dotenv').config();
-const unsplash = require('unsplash-js');
-const fetch = require('node-fetch');
-const request = require('request');
+import dotenv from 'dotenv'
+dotenv.config()
+import Twit from 'twit';
+import unsplash from 'unsplash-js';
+import "isomorphic-fetch";
+import fs from 'fs';
+import request from 'request';
+import Jimp from 'jimp';
 
 const Bot = new Twit({
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -12,11 +13,12 @@ const Bot = new Twit({
     access_token: process.env.TWITTER_ACCESS_TOKEN,
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
-
+ 
 const unsplashApi = unsplash.createApi({
     accessKey: process.env.UNSPLASH_ACCESS_KEY,
     fetch: fetch
 });
+
 
 const getPhoto = async (query) => {
     return unsplashApi.search
@@ -67,7 +69,7 @@ var download = function (uri, filename, callback) {
 };
 
 const saveTweet = (content) => {
-    var b64content = fs.readFileSync('./juliajacklin.jpg', { encoding: 'base64' });
+    var b64content = fs.readFileSync('./currentImage.jpg', { encoding: 'base64' });
     Bot.post('media/upload', { media_data: b64content }, function (err, data, response) {
         var mediaIdStr = data.media_id_string
         var meta_params = { media_id: mediaIdStr, alt_text: { text: content } }
@@ -78,7 +80,7 @@ const saveTweet = (content) => {
             if (!err) {
                 var params = { status: content, media_ids: [mediaIdStr] }
                 Bot.post('statuses/update', params, function (err, data, response) {
-                    console.log(content)
+                    //console.log(content)
                 })
             }
         })
@@ -86,14 +88,14 @@ const saveTweet = (content) => {
 }
 
 const generateImagePixel = async (photoUrl, content) => {
-    download(photoUrl, 'juliajacklin.jpg', () => {
-        Jimp.read('./juliajacklin.jpg')
+    download(photoUrl, 'currentImage.jpg', () => {
+        Jimp.read('./currentImage.jpg')
             .then(async image => {
                 await image
                     .cover(720, 720)
                     .quality(80)
                     .greyscale()
-                    .writeAsync('juliajacklin.jpg');
+                    .writeAsync('currentImage.jpg');
             }).then(() => {
                 saveTweet(content);
             })
@@ -108,15 +110,15 @@ const postTweetImg = async (content, query) => {
 
 function tweet() {
     const fileNum = randomNum(1, 26);
-    const fileName = 'lyrics/' + fileNum + '.txt';
-    console.log(fileName);
+    const fileName = 'src/lyrics/' + fileNum + '.txt';
+    //console.log(fileName);
     fs.readFile(fileName, 'utf8', function (error, lyrics) {
         if (error) {
             console.log(error.message);
         } else {
             let result = selectLines(lyrics);
-            //postTweetImg(result[0], result[1]);
-            postTweet(result[0]);
+            postTweetImg(result[0], result[1]);
+            //postTweet(result[0]);
         }
     });
 }
