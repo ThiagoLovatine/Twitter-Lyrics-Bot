@@ -94,7 +94,7 @@ const generateImagePixel = async (photoUrl, content) => {
                 await image
                     .cover(720, 720)
                     .quality(80)
-                    .greyscale()
+                    .sepia()
                     .writeAsync('currentImage.jpg');
             }).then(() => {
                 saveTweet(content);
