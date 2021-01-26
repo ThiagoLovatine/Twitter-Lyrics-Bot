@@ -39,7 +39,7 @@ const randomNum = (min, max) => {
 
 const selectLines = (lyrics) => {
     const lines = lyrics.split('\n');
-    let addLines = randomNum(0, 3);
+    let addLines = randomNum(1, 3);
     let firstLinePosition = randomNum(0, lines.length - 1);
     let firstLine = lines[firstLinePosition];
     let tweet = firstLine;
