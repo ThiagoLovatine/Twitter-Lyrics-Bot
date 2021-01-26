@@ -20,8 +20,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bot.js",
-    "boot_bot": "nodemon src/tweet.js"
+    "start": "nodemon src/tweet.js",
+    "scrapper": "nodemon src/scrapper.js"
   },
   "repository": {
     "type": "git",
